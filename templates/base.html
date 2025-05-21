@@ -42,5 +42,16 @@
         <div class="message-container"></div>
     {% endif %}
 
+    {% block page_header %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+    <!--Js we want to load at end of body-->
+    {% block postloadjs %}
+    {% endblock %}
+
+
   </body>
 </html>
