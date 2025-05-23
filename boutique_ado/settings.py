@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'home',
     'products',
+    'bag',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',  # required by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'bag.context.bag_contents',  # makes this context available in all templates
             ],
         },
     },
@@ -153,6 +155,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)  # tells django where the
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # where all uploaded media files will go
 
+FREE_DELIVERY_THRESHOLD = 50
+STATNDARD_DELIVERY_PERCENTAGE = 10
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
