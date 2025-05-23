@@ -24,7 +24,9 @@ def all_products(request):
                 if sortkey == 'name':
                     sortkey = 'lower_name'  # in the event the user is sorting by name
                     products = products.annotate(lower_name=Lower('name'))
-                
+                if sortkey == 'category':
+                    sortkey = 'category__name'  # sort on category name instead of id (I did not see the difference though)
+
                 if 'direction' in request.GET:
                     direction = request.GET['direction']
                     if direction == 'desc':
