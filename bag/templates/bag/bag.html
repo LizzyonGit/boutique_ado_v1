@@ -54,7 +54,7 @@
                             <p class="my-0">{{ item.quantity }}</p>
                         </td>
                         <td class="py-3">
-                            <p class="my-0">${{ item.product.price|multiply:item.quantity }}</p>
+                            <p class="my-0">${{ item.product.price|multiply:item.quantity }}</p> <!--fixed by myself-->
                         </td>
                     </tr>
                     {% endfor %}
