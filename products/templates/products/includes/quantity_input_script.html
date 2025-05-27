@@ -1,4 +1,31 @@
 <script type="text/javascript">
+    
+    function handleEnableDisable(itemId) {
+        let currentValue = parseInt($(`#id_qty_${itemId}`).val());
+        let minusDisabled = currentValue < 2;
+        let plusDisabled = currentValue > 98;
+        $(`#decrement-qty_${itemId}`).prop('disabled', minusDisabled); // Prop method sets the disabled property to true or false depending on current value
+        $(`#increment-qty_${itemId}`).prop('disabled', plusDisabled);
+
+    }
+
+    /*First we can disable the minus button by default. By getting all the quantity inputs on the page.
+Iterating through them. And for each one calling the enable/disable function
+as soon as the page loads.*/
+    let allQtyInputs = $('.qty_input');
+    for(let i = 0; i < allQtyInputs.length; i++){
+        let itemId = $(allQtyInputs[i]).data('item_id');
+        handleEnableDisable(itemId);
+    }
+
+    /*if the user uses the built-in up and down arrows in the number box to change the quantity.
+Listen to the change event on the quantity input
+and calling it every time the input changes.*/
+    $('.qty_input').change(function(){
+        let itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    })
+    
     // Adding products part 5 explains this
     // Increment quantity
     $('.increment-qty').click(function(e) {
@@ -6,6 +33,8 @@
         let closestInput = $(this).closest('.input-group').find('.qty_input')[0];
         let currentValue = parseInt($(closestInput).val());
         $(closestInput).val(currentValue + 1);
+        let itemId = $(this).data('item_id'); // data method which pulls it from the data item id attribute we added on the button.
+        handleEnableDisable(itemId);
     });
 
     // Decrement quantity
@@ -14,5 +43,7 @@
         let closestInput = $(this).closest('.input-group').find('.qty_input')[0];
         let currentValue = parseInt($(closestInput).val());
         $(closestInput).val(currentValue - 1);
+        let itemId = $(this).data('item_id'); // data method which pulls it from the data item id attribute we added on the button.
+        handleEnableDisable(itemId);
     });
 </script>
