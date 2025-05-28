@@ -82,7 +82,7 @@
                                             </div>
                                         </form>
                         <a class="update-link text-info"><small>Update</small></a>
-                        <a class="remove-item text-danger float-right" id="remove_{{ item.item_id }}" data-size="{{ item.size }}"><small>Remove</small></a>                
+                        <a class="remove-item text-danger float-right" id="remove_{{ item.item_id }}" data-product_size="{{ item.size }}"><small>Remove</small></a>                
                         </td>
                         <td class="py-3">
                             <p class="my-0">${{ item.product.price|multiply:item.quantity }}</p> <!--fixed by myself-->
@@ -149,17 +149,18 @@
      // Remove item and reload on click
     $('.remove-item').click(function(e) {
         let csrfToken = "{{ csrf_token }}"; /*And notice that this uses the actual template variable with the double curly brackets.
-As opposed to the template tag which uses the inner percent signs.
-This is because the former renders the actual token.
-While the latter renders a hidden input field in a form.*/
+        As opposed to the template tag which uses the inner percent signs.
+        This is because the former renders the actual token.
+        While the latter renders a hidden input field in a form.*/
         let itemId = $(this).attr('id').split('remove_')[1];
-        let size = $(this).data('size');
+        console.log(itemId);
+        let size = $(this).data('product_size');
         let url = `/bag/remove/${itemId}`;
-        let data = {'csrfmiddlewaretoken': csrfToken, 'size': size};
-        $.post(url, data)
-         .done(function() {
-             location.reload();
-         });
+        console.log(url);
+        let data = {'csrfmiddlewaretoken': csrfToken, 'product_size': size};
+        $.post(url, data).done(function() {
+            location.reload();
+        });
     })
 
 </script>

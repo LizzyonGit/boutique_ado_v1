@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, HttpResponse
 
 # Create your views here.
 
@@ -79,13 +79,15 @@ def adjust_bag(request, item_id):  # it takes in the request and the id of the p
             bag[item_id]['items_by_size'][size] = quantity
         else:
             del bag[item_id]['items_by_size'][size]
+            if not bag[item_id]['items_by_size']:
+                bag.pop(item_id)
     else:
         """If there's no size that logic is quite simple and we can remove the item
         entirely by using the pop function."""
         if quantity > 0:
             bag[item_id] = quantity
         else:
-            bag.pop[item_id]
+            bag.pop(item_id)
 
     # And then overwrite the variable in the session with the updated version.
     request.session['bag'] = bag
@@ -93,3 +95,40 @@ def adjust_bag(request, item_id):  # it takes in the request and the id of the p
     # print(request.session['bag'])  prints to the console to test bag content
 
     return redirect(reverse('view_bag'))  # redirect user back to bag view
+
+
+def remove_from_bag(request, item_id):  # it takes in the request and the id of the product the user wants to add
+    """remove item from bag"""
+    print(item_id)
+    try:
+        size = None
+        if 'product_size' in request.POST:
+            size = request.POST['product_size']
+
+        bag = request.session.get('bag', {})
+
+        if size:
+            """
+            So if size is in request.post. We'll want to delete that size key in the items by size dictionary.
+            Also if that's the only size they had in the bag.
+            In other words, if the items by size dictionary is now empty which will evaluate to false.
+            We might as well remove the entire item id so we don't end up with an empty items
+            by size dictionary hanging around.
+            """
+            del bag[item_id]['items_by_size'][size]
+            if not bag[item_id]['items_by_size']:
+                bag.pop(item_id)
+        else:
+            """If there's no size that logic is quite simple and we can remove the item
+            entirely by using the pop function."""
+            bag.pop(item_id)
+
+        # And then overwrite the variable in the session with the updated version.
+        request.session['bag'] = bag
+
+        print(request.session['bag'])  # prints to the console to test bag content
+
+        return HttpResponse(status=200)  # Because this view will be posted to from a JavaScript function. We want to return an actual 200 HTTP response.
+    except Exception as e:
+        return HttpResponse(status=500)
+    
