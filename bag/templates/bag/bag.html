@@ -155,7 +155,7 @@
         let itemId = $(this).attr('id').split('remove_')[1];
         console.log(itemId);
         let size = $(this).data('product_size');
-        let url = `/bag/remove/${itemId}`;
+        let url = `/bag/remove/${itemId}/`;
         console.log(url);
         let data = {'csrfmiddlewaretoken': csrfToken, 'product_size': size};
         $.post(url, data).done(function() {
