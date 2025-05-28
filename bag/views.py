@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 
 # Create your views here.
 
@@ -51,3 +51,45 @@ def add_to_bag(request, item_id):  # it takes in the request and the id of the p
     # print(request.session['bag'])  prints to the console to test bag content
 
     return redirect(redirect_url)  # redirect user back to redirect url
+
+def adjust_bag(request, item_id):  # it takes in the request and the id of the product the user wants to add
+    """adjust the quantity of the specified product to the specified amount """
+
+    quantity = int(request.POST.get('quantity'))  # get qty from form, convert to integer as it is a string from the form
+    # we don't need redirect url because we always want to redirect to bag page
+    size = None
+    if 'product_size' in request.POST:
+        size = request.POST['product_size']
+
+
+    # variable bag accesses the requests session.
+    # Trying to get this variable if it already exists. (get('bag'))
+    # And initializing it to an empty dictionary if it doesn't. (get(, {}))
+    # In this way, we first check to see if there's a bag variable in the session.
+    # And if not we'll create one.
+    bag = request.session.get('bag', {})
+
+    if size:
+        """
+        If there's a size. Of course we'll need to drill into the
+        items by size dictionary, find that specific size and either set its
+        quantity to the updated one or remove it if the quantity submitted is zero.
+        """
+        if quantity > 0:
+            bag[item_id]['items_by_size'][size] = quantity
+        else:
+            del bag[item_id]['items_by_size'][size]
+    else:
+        """If there's no size that logic is quite simple and we can remove the item
+        entirely by using the pop function."""
+        if quantity > 0:
+            bag[item_id] = quantity
+        else:
+            bag.pop[item_id]
+
+    # And then overwrite the variable in the session with the updated version.
+    request.session['bag'] = bag
+
+    # print(request.session['bag'])  prints to the console to test bag content
+
+    return redirect(reverse('view_bag'))  # redirect user back to bag view
