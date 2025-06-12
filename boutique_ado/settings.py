@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',  # required by allauth
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',  # so we can access the no image fil in the media folder
                 'bag.contexts.bag_contents',  # makes this context available in all templates
             ],
             # We can actually add a list called built-ins which will contain all the tags we want available in all our templates by default. 

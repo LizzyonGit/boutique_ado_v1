@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load math_filters %}
-{% load bag_tools %}
+
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'checkout/css/checkout.css' %}">
@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col">
             <hr>
-            <h2 class="logo-font mb-4">Shopping bag</h2>
+            <h2 class="logo-font mb-4">Checkout</h2>
             <hr>
         </div>
     </div>
@@ -54,7 +54,7 @@
                         <p class="my-0 small text-muted">Qty: {{ item.quantity }}</p>
                     </div>
                     <div class="col-3 text-right">
-                        <p class="my-0 small text-muted">${{ item.product.price | calc_subtotal:item.quantity }}</p>
+                        <p class="my-0 small text-muted">${{ item.product.price | multiply:item.quantity }}</p>
                     </div>
                 </div>
             {% endfor %}
