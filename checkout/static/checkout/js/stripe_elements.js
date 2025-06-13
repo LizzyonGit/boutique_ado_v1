@@ -10,14 +10,14 @@
 So we can get them just by getting their ids and using the .text function.
 I'll also slice off the first and last character on each
 since they'll have quotation marks which we don't want.*/
-let stripe_public_key = $('#id_stripe_public_key').text().slice(1, -1);
-let client_secret = $('#id_client_secret').text().slice(1, -1);
+let stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
+let clientSecret = $('#id_client_secret').text().slice(1, -1);
 
 /*All we need to do to set up stripe is create a variable using our stripe public key.
 Now we can use it to create an instance of stripe elements.
 Use that to create a card element.
 And finally, mount the card element to the div we created in the last video. */
-let stripe = Stripe(stripe_public_key);
+let stripe = Stripe(stripePublicKey);
 let elements = stripe.elements();
 let style = {
     base: {
@@ -55,3 +55,33 @@ card.addEventListener('change', function (event) {
 
     }
 );
+
+// Handle form submit
+let form = document.getElementById('payment-form');
+
+form.addEventListener('submit', function(ev) {
+    ev.preventDefault();  // After getting the form element the first thing the listener does is prevent its default action which in our case is to post.
+    card.update({ 'disabled': true});
+    $('#submit-button').attr('disabled', true);  // Here before we call out to stripe. We'll want to disable both the card element and the submit button to prevent multiple submissions.
+    stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+            card: card,
+        }
+    }).then(function(result) {  //So we call the confirm card payment method. Provide the card to stripe and then execute this function on the result.
+        if (result.error) {
+            let errorDiv = document.getElementById('card-errors');
+            let html = `
+                <span class="icon" role="alert">
+                <i class="fas fa-times"></i>
+                </span>
+                <span>${result.error.message}</span>`;
+            $(errorDiv).html(html);
+            card.update({ 'disabled': false});
+            $('#submit-button').attr('disabled', false);  // allows user to fix it when error
+        } else {
+            if (result.paymentIntent.status === 'succeeded') {
+                form.submit();
+            }
+        }
+    });
+});
