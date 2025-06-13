@@ -137,32 +137,8 @@
 {% endblock%}
 
 {% block postloadjs %}
-{{ block.super }}
-{% include 'products/includes/quantity_input_script.html' %}
-<script type="text/javascript">
-    // Update quantity on click
-    // I'll use the previous method to find the most recently seen update form in the Dom.
-    $('.update-link').click(function(e) {
-        let form = $(this).prev('.update-form');
-        form.submit();
-    })
-
-     // Remove item and reload on click
-    $('.remove-item').click(function(e) {
-        let csrfToken = "{{ csrf_token }}"; /*And notice that this uses the actual template variable with the double curly brackets.
-        As opposed to the template tag which uses the inner percent signs.
-        This is because the former renders the actual token.
-        While the latter renders a hidden input field in a form.*/
-        let itemId = $(this).attr('id').split('remove_')[1];
-        console.log(itemId);
-        let size = $(this).data('product_size');
-        let url = `/bag/remove/${itemId}/`;
-        console.log(url);
-        let data = {'csrfmiddlewaretoken': csrfToken, 'product_size': size};
-        $.post(url, data).done(function() {
-            location.reload();
-        });
-    })
-
-</script>
+    {{ block.super }}
+    {{ stripe_public_key|json_script:"id_stripe_public_key" }}
+    {{ client_secret|json_script:"id_client_secret" }}
+    <script src="{% static 'checkout/js/stripe_elements.js' %}"></script>
 {% endblock%}
