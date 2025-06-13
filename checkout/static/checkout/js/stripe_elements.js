@@ -36,3 +36,22 @@ let style = {
 };
 let card = elements.create('card', {style: style});
 card.mount('#card-element');
+
+// Handle realtime validation error on card element
+/*Looking at the site now it's more clear what the issue is if the user experience is an error.
+As we've rendered the error from stripe with a nice little icon next to it. */
+card.addEventListener('change', function (event) {
+    let errorDiv = document.getElementById('card-error');
+    if (event.error) {
+        let html = `
+        <span class='icon' roles='alert'>
+            <i class="fas fa-times"></i>
+        </span>
+        <span>${event.error.message}</span>`;
+        $(errorDiv).html(html);
+    } else{
+        errorDiv.textContent = '';
+    }
+
+    }
+);
