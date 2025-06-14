@@ -65,6 +65,7 @@ def checkout(request):
                     return redirect(reverse('view_bag'))
 
             request.session['save_info'] = 'save-info' in request.POST
+            print(order_number)
             return redirect(reverse('checkout_success', args=[order.order_number]))
         else:
             messages.error(request, 'There was an error with your form. \
@@ -95,26 +96,28 @@ def checkout(request):
             amount=stripe_total,
             currency=settings.STRIPE_CURRENCY,
         )
-        # print(intent)
+        # print(intent)        
+        order_form = OrderForm()  # empty instance of form
+
         if not stripe_public_key:
             messages.warning(request, 'Stripe public key is missing. \
                             Is it set in your environment?')
 
-        order_form = OrderForm()  # empty instance of form
 
-    template = 'checkout/checkout.html'
-    context = {
-        'order_form': order_form,
-        'stripe_public_key': stripe_public_key,
-        'client_secret': intent.client_secret,
+        template = 'checkout/checkout.html'
+        context = {
+            'order_form': order_form,
+            'stripe_public_key': stripe_public_key,
+            'client_secret': intent.client_secret,
 
-    }
+        }
 
-    return render(request, template, context)
+        return render(request, template, context)
     
 
 def checkout_success(request, order_number):
     """Handle sucessful checkouts"""
+    print(order_number)
 
     save_info = request.session.get('save_info')
     order = get_object_or_404(Order, order_number=order_number)

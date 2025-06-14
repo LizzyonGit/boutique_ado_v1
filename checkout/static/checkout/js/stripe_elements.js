@@ -41,7 +41,7 @@ card.mount('#card-element');
 /*Looking at the site now it's more clear what the issue is if the user experience is an error.
 As we've rendered the error from stripe with a nice little icon next to it. */
 card.addEventListener('change', function (event) {
-    let errorDiv = document.getElementById('card-error');
+    let errorDiv = document.getElementById('card-errors');
     if (event.error) {
         let html = `
         <span class='icon' roles='alert'>
@@ -70,16 +70,13 @@ form.addEventListener('submit', function(ev) {
     }).then(function(result) {  //So we call the confirm card payment method. Provide the card to stripe and then execute this function on the result.
         if (result.error) {
             let errorDiv = document.getElementById('card-errors');
-            let html = `
-                <span class="icon" role="alert">
-                <i class="fas fa-times"></i>
-                </span>
-                <span>${result.error.message}</span>`;
+            let html = `<span class="icon" role="alert"><i class="fas fa-times"></i></span><span>${result.error.message}</span>`;
             $(errorDiv).html(html);
             card.update({ 'disabled': false});
             $('#submit-button').attr('disabled', false);  // allows user to fix it when error
         } else {
             if (result.paymentIntent.status === 'succeeded') {
+                
                 form.submit();
             }
         }
