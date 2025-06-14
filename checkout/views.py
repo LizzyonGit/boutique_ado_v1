@@ -15,7 +15,7 @@ def checkout(request):
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
     stripe_secret_key = settings.STRIPE_SECRET_KEY
 
-    if request == 'POST':
+    if request.method == 'POST':
         bag = request.session.get('bag', {})
         # I'm doing this manually in order to skip the save infobox which doesn't have a field on the order model.
         form_data = {
@@ -65,7 +65,7 @@ def checkout(request):
                     return redirect(reverse('view_bag'))
 
             request.session['save_info'] = 'save-info' in request.POST
-            print(order_number)
+            print(order.order_number)
             return redirect(reverse('checkout_success', args=[order.order_number]))
         else:
             messages.error(request, 'There was an error with your form. \
