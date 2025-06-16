@@ -62,7 +62,11 @@ let form = document.getElementById('payment-form');
 form.addEventListener('submit', function(ev) {
     ev.preventDefault();  // After getting the form element the first thing the listener does is prevent its default action which in our case is to post.
     card.update({ 'disabled': true});
+    
     $('#submit-button').attr('disabled', true);  // Here before we call out to stripe. We'll want to disable both the card element and the submit button to prevent multiple submissions.
+    $('#payment-form').fadeToggle(100);  // Payment-form comes from Stripe when authentication is needed?
+    $('#loading-overlay').fadeToggle(100);
+    
     stripe.confirmCardPayment(clientSecret, {
         payment_method: {
             card: card,
@@ -72,6 +76,9 @@ form.addEventListener('submit', function(ev) {
             let errorDiv = document.getElementById('card-errors');
             let html = `<span class="icon" role="alert"><i class="fas fa-times"></i></span><span>${result.error.message}</span>`;
             $(errorDiv).html(html);
+            // Reverses prev fadetoggles that if there's any error. Don't really understand this.
+            $('#payment-form').fadeToggle(100); 
+            $('#loading-overlay').fadeToggle(100);
             card.update({ 'disabled': false});
             $('#submit-button').attr('disabled', false);  // allows user to fix it when error
         } else {
