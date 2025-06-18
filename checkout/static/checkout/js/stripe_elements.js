@@ -137,7 +137,7 @@ form.addEventListener('submit', function(ev) {
             } else {
                 if (result.paymentIntent.status === 'succeeded') {
                     
-                    form.submit();
+                    form.submit(); //comment this out to check if order will be created via webhook when form does not submit for some reason (keeps spinning)
                 }
             }
         });
