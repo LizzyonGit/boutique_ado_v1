@@ -1,12 +1,10 @@
 from django import forms
-from .models import Order
+from .models import UserProfile
 
-class OrderForm(forms.ModelForm):
+class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = Order
-        fields = ('full_name', 'email', 'phone_number', 'street_address1',
-              'street_address2', 'town_or_city',
-               'postcode', 'county', 'country',)
+        model = UserProfile
+        exclude = ('user',)  # render all fields except for user, that sjould never change
         
     def __init__(self, *args, **kwargs):
         """
@@ -19,18 +17,16 @@ class OrderForm(forms.ModelForm):
         """
         super().__init__(*args, **kwargs)
         placeholders = {
-            'full_name': 'Full Name',
-            'email': 'Email Address',
-            'phone_number': 'Phone Number',
-            'postcode': 'Postal Code',
-            'town_or_city': 'Town or City',
-            'street_address1': 'Street Address 1',
-            'street_address2': 'Street Address 2',
-            'county': 'County, State or Locality',
+            'default_phone_number': 'Phone Number',
+            'default_postcode': 'Postal Code',
+            'default_town_or_city': 'Town or City',
+            'default_street_address1': 'Street Address 1',
+            'default_street_address2': 'Street Address 2',
+            'default_county': 'County, State or Locality',
         }
 
         # Next we're setting the autofocus attribute on the full name field to true so the cursor will start in the full name field when the user loads the page.
-        self.fields['full_name'].widget.attrs['autofocus'] = True
+        self.fields['default_phone_number'].widget.attrs['autofocus'] = True
 
         # And finally we iterate through the forms fields adding a star to the placeholder if it's a required field on the model.
         # Setting all the placeholder attributes to their values in the dictionary above.
@@ -43,5 +39,5 @@ class OrderForm(forms.ModelForm):
                 else:
                     placeholder = placeholders[field]
                 self.fields[field].widget.attrs['placeholder'] = placeholder
-            self.fields[field].widget.attrs['class'] = 'border-black rounded-0 profile-form-input'
+            self.fields[field].widget.attrs['class'] = 'stripe-style-input'
             self.fields[field].label = False    
