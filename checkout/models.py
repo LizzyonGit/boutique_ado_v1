@@ -7,10 +7,19 @@ from django.conf import settings
 from django_countries.fields import CountryField
 
 from products.models import Product
+from profiles.models import UserProfile
 # Create your models here.
 
 class Order(models.Model):
     order_number = models.CharField(max_length=32, null=False, editable=False)
+    """We'll use models.SET_NULL if the profile is deleted since that will allow us to keep
+        an order history in the admin even if the user is deleted.
+        And will also allow this to be either null or blank so that users who don't have an
+        account can still make purchases.
+        Lastly I'll add a related name of orders so we can access
+        users orders by calling something like user.userprofile.orders
+    """
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     full_name = models.CharField(max_length=50, null=False, blank=False)
     email = models.EmailField(max_length=254, null=False, blank=False)
     phone_number = models.CharField(max_length=20, null=False, blank=False)
@@ -25,7 +34,7 @@ class Order(models.Model):
     order_total = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)
     grand_total = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0)
     original_bag = models.TextField(null=False, blank=False, default='')
-    stripe_pid = models.CharField(max_length=254, null=False, blank=False, default='')  #guaranteed to be unique
+    stripe_pid = models.CharField(max_length=254, null=False, blank=False, default='')  # guaranteed to be unique
 
 
     def _generate_order_number(self):

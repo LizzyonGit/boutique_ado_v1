@@ -25,4 +25,5 @@ urlpatterns = [
     path('products/', include('products.urls')),
     path('bag/', include('bag.urls')),  # I missed the / which caused the remove function to collapse, needed to add it in the main urls all along!!! Now it works!
     path('checkout/', include('checkout.urls')),
+    path('profile/', include('profiles.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
