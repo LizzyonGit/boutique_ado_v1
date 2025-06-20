@@ -1,4 +1,7 @@
 from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from .models import Order, OrderLineItem
 from products.models import Product
@@ -18,6 +21,25 @@ just in case we need to access any attributes of the request coming from stripe.
 
     def __init__(self, request):
         self.request = request
+
+
+    def _send_confirmation_email(self, order):  # private method
+        """Send user confirmation email"""
+        cust_email = order.email  # email address
+        """Then we can use the render_to_string method to render both the files we just created two strings.
+            With the first parameter being the file we want to render.
+            And the second being at context just like we would pass to a template.
+            This is how we'll be able to render the various context variables in the confirmation email."""
+        subject = render_to_string(
+            'checkout/confirmation_emails/confirmation_email_subject.txt',
+            {'order': order})
+        body = render_to_string(
+            'checkout/confirmation_emails/confirmation_email_body.txt',
+            {'order': order, 'contact_email': settings.DEFAULT_FROM_EMAIL})
+        
+        # send email
+        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [cust_email])
+
 
     
     def handle_event(self, event):
@@ -99,6 +121,7 @@ just in case we need to access any attributes of the request coming from stripe.
                 time.sleep(1)     # sleep one second   
         
         if order_exists:
+            self._send_confirmation_email(order)
             return HttpResponse(
                     content=f'Webhook received: {event["type"]} | SUCCESS: Verified order already in database',
                     status=200)
@@ -144,8 +167,9 @@ just in case we need to access any attributes of the request coming from stripe.
                         order.delete()
                     return HttpResponse(content=f'Webhook received: {event["type"]} | ERROR: {e}',
                                         status=500 )
+        
 
-
+        self._send_confirmation_email(order)
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | SUCCESS: Created order in webhook',
             status=200)  # If we got to this point in the code, we know the order was created in webhook handler.
