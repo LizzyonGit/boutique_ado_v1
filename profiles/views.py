@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import UserProfile
 from .forms import UserProfileForm
+from checkout.models import Order
 
 from django.contrib import messages
 
@@ -28,3 +29,20 @@ def profile(request):
     }
 
     return render(request, template, context)
+
+
+def order_history(request, order_number):
+    order = get_object_or_404(Order, order_number=order_number)
+
+    messages.info(request, (
+        f'This is a past confirmation for order {order_number}.'
+    ))
+
+    template = 'checkout/checkout_success.html'
+    context = {
+        'order': order,
+        'from_profile': True,  # Instead, I've added another variable to the context called from_profile So we can check in that template if the user got there via the order history view. This is done in checkout_succes.html
+    }
+
+    return render(request, template, context)
+

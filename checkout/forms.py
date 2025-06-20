@@ -37,7 +37,7 @@ class OrderForm(forms.ModelForm):
         # Adding a CSS class we'll use later.
         # And then removing the form fields labels.
         for field in self.fields:
-            if field != 'default_country':
+            if field != 'country':
                 if self.fields[field].required:
                     placeholder = f'{placeholders[field]} *'
                 else:
