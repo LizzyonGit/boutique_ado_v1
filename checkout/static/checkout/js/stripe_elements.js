@@ -134,10 +134,11 @@ form.addEventListener('submit', function(ev) {
                 $('#loading-overlay').fadeToggle(100);
                 card.update({ 'disabled': false});
                 $('#submit-button').attr('disabled', false);  // allows user to fix it when error
-            } else {
+            }  else {
                 if (result.paymentIntent.status === 'succeeded') {
                     
-                    form.submit(); //comment this out to check if order will be created via webhook when form does not submit for some reason (keeps spinning)
+                    form.submit(); 
+                    // comment this out to check if order will be created via webhook when form does not submit for some reason (keeps spinning)
                 }
             }
         });

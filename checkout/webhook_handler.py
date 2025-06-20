@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 from .models import Order, OrderLineItem
 from products.models import Product
-
+from profiles.models import UserProfile
 
 import json
 import time
@@ -52,6 +52,24 @@ just in case we need to access any attributes of the request coming from stripe.
             if value == "":
                 shipping_details.address[field] = None
 
+        
+        # update profile info when save_info is checked
+        profile = None  # so anonymous users can check out
+        username = intent.metadata.username
+        if username != 'AnonymousUser':
+            profile = UserProfile.objects.get(user__username=username)
+            if save_info:
+                profile.default_phone_number=shipping_details.phone,
+                profile.default_country=shipping_details.address.country,
+                profile.default_postcode=shipping_details.address.postal_code,
+                profile.default_town_or_city=shipping_details.address.city,
+                profile.default_street_address1=shipping_details.address.line1,
+                profile.default_street_address2=shipping_details.address.line2,
+                profile.default_county=shipping_details.address.state,
+                profile.save()
+
+
+
         # in normal situation, the order goes through and is in database when we receive this webhook let's assume it does not exist
         order_exists = False
 
@@ -90,6 +108,7 @@ just in case we need to access any attributes of the request coming from stripe.
                 try:
                     order = Order.objects.create(
                         full_name=shipping_details.name,
+                        user_profile=profile,  # add profile to order
                         email=billing_details.email,
                         phone_number=shipping_details.phone,
                         country=shipping_details.address.country,
