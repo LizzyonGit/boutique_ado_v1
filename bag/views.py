@@ -39,7 +39,7 @@ def add_to_bag(request, item_id):  # it takes in the request and the id of the p
             """
             if size in bag[item_id]['items_by_size'].keys():
                 bag[item_id]['items_by_size'][size] += quantity
-                messages.success(request, f'You have successfully updated size {size.upper()} {product.name} quantity to {bag[item_id]['items_by_size'][size]}')
+                messages.success(request, f'You have successfully updated size {size.upper()} {product.name} quantity to {bag[item_id]["items_by_size"][size]}')
             # bag[item_id]['items_by_size'][size] drills down to quantity in items by size dictionary
                 
 
@@ -92,7 +92,7 @@ def adjust_bag(request, item_id):  # it takes in the request and the id of the p
         """
         if quantity > 0:
             bag[item_id]['items_by_size'][size] = quantity
-            messages.success(request, f'You have successfully updated size {size.upper()} {product.name} quantity to {bag[item_id]['items_by_size'][size]}')
+            messages.success(request, f'You have successfully updated size {size.upper()} {product.name} quantity to {bag[item_id]["items_by_size"][size]}')
 
         else:
             del bag[item_id]['items_by_size'][size]
