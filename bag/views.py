@@ -159,6 +159,6 @@ def remove_from_bag(request, item_id):  # it takes in the request and the id of 
 
         return HttpResponse(status=200)  # Because this view will be posted to from a JavaScript function. We want to return an actual 200 HTTP response.
     except Exception as e:
-        messages.error(request, f'Error removing item: (e)')
+        messages.error(request, f'Error removing item: {e}')
         return HttpResponse(status=500)
     
