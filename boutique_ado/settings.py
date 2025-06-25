@@ -32,9 +32,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEVELOPMENT' in os.environ
 
 
-ALLOWED_HOSTS = ['127.0.0.1',
-                 'localhost',
-                 'butik-ado-f227aacbbaf3.herokuapp.com',
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'butik-ado-f227aacbbaf3.herokuapp.com',
 ]
 
 
@@ -203,7 +204,7 @@ if 'USE_AWS' in os.environ:
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
-    #static and media files
+    # static and media files
     STATICFILES_STORAGE = 'custom_storages.StaticStorage'
     STATICFILES_LOCATION = 'static'
     DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
